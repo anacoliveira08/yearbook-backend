@@ -9,10 +9,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/status', (req, res) => {
-    res,json({
+    res.json({
         status: 'ok',
-        timestap: new Date()
-    })
+        timestamp: new Date()
+    });
 });
 
 // inicia o servidor localmente — na Vercel essa parte é pulada
