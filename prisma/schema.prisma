@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enum — valores fixos para o campo role
+enum Role {
+  USER    // aluno comum
+  ADMIN   // administrador (professor ou aluno com permissão especial)
+}
+
+// Model Aluno — representa a tabela "Aluno" no banco
+model Aluno {
+  id            Int        @id @default(autoincrement())  // PK, gerado automaticamente
+  nome          String                                     // obrigatório
+  email         String     @unique                         // obrigatório e único
+  senhaHash     String                                     // hash da senha (nunca retornado pela API)
+  cidade        String?                                    // opcional
+  frase         String?                                    // opcional
+  planosFuturos String?                                    // opcional
+  fotoUrl       String?                                    // opcional (URL do Uploadcare)
+  role          Role       @default(USER)                  // USER por padrão
+  criadoEm      DateTime   @default(now())                 // data de criação automática
+  mensagens     Mensagem[]                                 // relação 1:N — um aluno tem muitas mensagens
+}
+
+// model Mensagem
+model Mensagem {
+  id        Int      @id @default(autoincrement())
+  texto     String
+  imagemUrl String?
+  autorId   Int
+  autor     Aluno    @relation(fields: [autorId], references: [id])
+  criadoEm  DateTime @default(now())
+}
