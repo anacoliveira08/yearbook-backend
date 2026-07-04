@@ -14,5 +14,5 @@ jobs:
           node-version: 24
 
       - run: npm install
-
-      - run: node --check index.js
+      - name: Verifica sintaxe de todos os arquivos JS
+        run: find . -name '*.js' -not -path './node_modules/*' -exec node --check {} +
